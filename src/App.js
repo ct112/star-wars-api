@@ -7,7 +7,7 @@ import PropTypes from "prop-types"
 
 function App(){
   const [characters,setCharacters] = useState([])
-  let [page, setPage] = useState(1)
+  let [page, setPage] = useState(9)
 
   useEffect(async() => {
     const response = await axios(`https://swapi.dev/api/people?page=${page}`)
@@ -16,31 +16,17 @@ function App(){
           person.homeworld = planetResponse.data.name
       }
       for (let person of response.data.results){
-          if (person.species.length === 0) {
-          }else{
+          if (person.species.length != 0) {
               let speciesResponse = await axios(person.species[0])
               person.species = speciesResponse.data.name
+          } else {
+              person.species.push("human")
           }
       }
-
-
-          // let [key, value] = Object.entries(planetResponse.data)[0]
-          // let homeworldName = {homeworld:value}
-          // let updatedReponse = [...response.data.results,homeworldName]
-          //testArray.push(nameObject)
-
-      //response.data.results.forEach((item,)=> item.homeworld = )
-
-   //const homeworld = await axios(response.data.results.)
-    response.data.results.forEach(item=>{
-        if (item.species.length === 0) {item.species.push("human")}
-    })
     setCharacters(response.data.results)
-  },[])
+  },[page])
 
-
-
-  function handleChange(){
+    function handleChange(){
   }
 
   return(
