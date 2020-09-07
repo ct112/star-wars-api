@@ -13,6 +13,7 @@ function App(){
   useEffect(() => {
       const getData = async () => {
         const response = await axios(`https://swapi.dev/api/people?page=${page}`)
+
         for (let person of response.data.results ) {
           let planetResponse = await axios(person.homeworld)
           person.homeworld = planetResponse.data.name
@@ -53,11 +54,6 @@ function App(){
             apiQueryName()
         }
     }
-
-
-  function handleSubmit(){
-
-  }
 
   function handleClick(number){
       setPage(number)
