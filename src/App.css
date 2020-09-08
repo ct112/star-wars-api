@@ -7,6 +7,19 @@
   pointer-events: none;
 }
 
+body, html {
+height: 100%;
+}
+
+.bg {
+background-image: url(img/star-wars-backgrounds-36-1.jpg);
+
+height: 100vh;
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

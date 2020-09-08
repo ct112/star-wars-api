@@ -3,6 +3,7 @@ import './App.css'
 import Table from "./Components/Table"
 import SearchField from "./Components/SearchField"
 import axios from "axios"
+import Header from "./Components/Header"
 import PropTypes from "prop-types"
 
 function App(){
@@ -20,6 +21,16 @@ function App(){
             .catch((error)=>console.log(error))
 
   }, [page])
+
+    useEffect(()=> {
+        if(!searchName) {
+            fetchCharactersPage()
+                .then(res => fetchCharacterHomeworld(res))
+                .then(res => fetchSpecies(res))
+                .then(res => setCharacters(res))
+                .catch((error) => console.log(error))
+        }
+        },[searchName])
 
     async function fetchCharactersPage() {
         const response = await axios(`https://swapi.dev/api/people?page=${page}`)
@@ -46,7 +57,7 @@ function App(){
          return charactersPage
     }
 
-    async function getCharactersByName(){
+    async function fetchCharactersByName(){
         let response = await axios(`https://swapi.dev/api/people?search=${searchName}`)
         return response.data.results
     }
@@ -55,41 +66,25 @@ function App(){
         let {value} = event.target
         setSearchName(value)
         if (searchName.length >= 3) {
-            getCharactersByName()
+            fetchCharactersByName()
                 .then(res => fetchCharacterHomeworld(res))
                 .then(res => fetchSpecies(res))
                 .then(res => setCharacters(res))
                 .catch((error) => console.log(error))
         }
     }
-
-    function handleKeypress(event){
-        // let keypress = event.which
-        // if (keypress !== 8){
-        //     setKeypressCount(prevState => prevState + 1 )
-        // } else {
-        //     setKeypressCount(prevState => prevState - 1)
-        // }
-
-      // if (searchName.length === 1 && keypress === 8){setCharacters(charactersRef.current)}
-    }
-
-
-  function handleClick(number){
+function handleClick(number){
       setPage(number)
 
   }
 
   return(
-      <div>
-          <SearchField handleChange={handleChange} handleKeypress={handleKeypress}/>
+      <div className="bg">
+          <Header/>
+          <SearchField handleChange={handleChange}/>
           <Table data={characters} handleClick={handleClick}/>
       </div>
   )
-}
-
-App.propTypes = {
-    characters: PropTypes.array.isRequired
 }
 
 export default App

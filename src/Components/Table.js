@@ -14,7 +14,7 @@ function Table(props){
         </tr>)
     )
     return (
-        <Tables>
+        <Tables style={{color:"white"}}>
             <thead>
                 <tr>
                     <th>Name</th>
