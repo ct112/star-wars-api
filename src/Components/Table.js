@@ -1,5 +1,6 @@
 import React from "react"
 import Pagination from "./Pagination"
+import {Table as Tables} from "react-bootstrap"
 
 function Table(props){
     const rows = props.data.map(item => (
@@ -13,7 +14,7 @@ function Table(props){
         </tr>)
     )
     return (
-        <table>
+        <Tables>
             <thead>
                 <tr>
                     <th>Name</th>
@@ -41,7 +42,7 @@ function Table(props){
 
                         </ul>
                     </div>
-        </table>
+        </Tables>
 
     )
 }

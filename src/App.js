@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import './App.css'
 import Table from "./Components/Table"
 import SearchField from "./Components/SearchField"
@@ -8,7 +8,9 @@ import PropTypes from "prop-types"
 function App(){
   const [characters,setCharacters] = useState([])
   let [page, setPage] = useState(1)
-  let [name, setName] = useState("")
+  let [searchName, setSearchName] = useState("")
+  // let [keypressCount, setKeypressCount]=useState(0)
+  // let charactersRef = useRef(null)
 
   useEffect(() => {
         fetchCharactersPage()
@@ -16,6 +18,7 @@ function App(){
             .then(res => fetchSpecies(res))
             .then(res => setCharacters(res))
             .catch((error)=>console.log(error))
+
   }, [page])
 
     async function fetchCharactersPage() {
@@ -33,7 +36,7 @@ function App(){
 
     async function fetchSpecies(charactersPage){
          for (let individualCharacter of charactersPage){
-          if (individualCharacter.species.length != 0) {
+          if (individualCharacter.species.length !== 0) {
               let characterSpecies = await axios(individualCharacter.species[0])
               individualCharacter.species = characterSpecies.data.name
           } else {
@@ -44,20 +47,31 @@ function App(){
     }
 
     async function getCharactersByName(){
-        let response = await axios(`https://swapi.dev/api/people?search=${name}`)
+        let response = await axios(`https://swapi.dev/api/people?search=${searchName}`)
         return response.data.results
     }
 
     function handleChange(event){
         let {value} = event.target
-        setName(value)
-        if (name.length >= 3) {
+        setSearchName(value)
+        if (searchName.length >= 3) {
             getCharactersByName()
                 .then(res => fetchCharacterHomeworld(res))
                 .then(res => fetchSpecies(res))
                 .then(res => setCharacters(res))
                 .catch((error) => console.log(error))
         }
+    }
+
+    function handleKeypress(event){
+        // let keypress = event.which
+        // if (keypress !== 8){
+        //     setKeypressCount(prevState => prevState + 1 )
+        // } else {
+        //     setKeypressCount(prevState => prevState - 1)
+        // }
+
+      // if (searchName.length === 1 && keypress === 8){setCharacters(charactersRef.current)}
     }
 
 
@@ -68,7 +82,7 @@ function App(){
 
   return(
       <div>
-          <SearchField handleChange={handleChange}/>
+          <SearchField handleChange={handleChange} handleKeypress={handleKeypress}/>
           <Table data={characters} handleClick={handleClick}/>
       </div>
   )
