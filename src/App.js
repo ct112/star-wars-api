@@ -11,49 +11,55 @@ function App(){
   let [name, setName] = useState("")
 
   useEffect(() => {
-      const getData = async () => {
+        fetchCharactersPage()
+            .then(res => fetchCharacterHomeworld(res))
+            .then(res => fetchSpecies(res))
+            .then(res => setCharacters(res))
+            .catch((error)=>console.log(error))
+  }, [page])
+
+    async function fetchCharactersPage() {
         const response = await axios(`https://swapi.dev/api/people?page=${page}`)
+        return response.data.results
+    }
 
-        for (let person of response.data.results ) {
-          let planetResponse = await axios(person.homeworld)
-          person.homeworld = planetResponse.data.name
+    async function fetchCharacterHomeworld(charactersPage){
+        for (let individualCharacter of charactersPage) {
+            let characterHomeworld = await axios(individualCharacter.homeworld)
+            individualCharacter.homeworld = characterHomeworld.data.name
         }
-        for (let person of response.data.results){
-          if (person.species.length != 0) {
-              let speciesResponse = await axios(person.species[0])
-              person.species = speciesResponse.data.name
+        return charactersPage
+    }
+
+    async function fetchSpecies(charactersPage){
+         for (let individualCharacter of charactersPage){
+          if (individualCharacter.species.length != 0) {
+              let characterSpecies = await axios(individualCharacter.species[0])
+              individualCharacter.species = characterSpecies.data.name
           } else {
-              person.species.push("human")
+              individualCharacter.species.push("human")
           }
-        }
-        setCharacters(response.data.results)
-      }
-      getData()
+         }
+         return charactersPage
+    }
 
-  },[page])
+    async function getCharactersByName(){
+        let response = await axios(`https://swapi.dev/api/people?search=${name}`)
+        return response.data.results
+    }
 
     function handleChange(event){
         let {value} = event.target
-        if (value.length >= 3) {
-            let apiQueryName = async () => {
-                const response = await axios(`https://swapi.dev/api/people?search=${value}`)
-                for (let person of response.data.results) {
-                    let planetResponse = await axios(person.homeworld)
-                    person.homeworld = planetResponse.data.name
-                }
-                for (let person of response.data.results) {
-                    if (person.species.length != 0) {
-                        let speciesResponse = await axios(person.species[0])
-                        person.species = speciesResponse.data.name
-                    } else {
-                        person.species.push("human")
-                    }
-                }
-                setCharacters(response.data.results)
-            }
-            apiQueryName()
+        setName(value)
+        if (name.length >= 3) {
+            getCharactersByName()
+                .then(res => fetchCharacterHomeworld(res))
+                .then(res => fetchSpecies(res))
+                .then(res => setCharacters(res))
+                .catch((error) => console.log(error))
         }
     }
+
 
   function handleClick(number){
       setPage(number)
