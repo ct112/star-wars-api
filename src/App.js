@@ -4,14 +4,12 @@ import Table from "./Components/Table"
 import SearchField from "./Components/SearchField"
 import axios from "axios"
 import Header from "./Components/Header"
-import PropTypes from "prop-types"
+import Pagination from "./Components/Pagination"
 
 function App(){
   const [characters,setCharacters] = useState([])
   let [page, setPage] = useState(1)
   let [searchName, setSearchName] = useState("")
-  // let [keypressCount, setKeypressCount]=useState(0)
-  // let charactersRef = useRef(null)
 
   useEffect(() => {
         fetchCharactersPage()
@@ -73,8 +71,9 @@ function App(){
                 .catch((error) => console.log(error))
         }
     }
-function handleClick(number){
-      setPage(number)
+function handleClick(e){
+      const pageNumber = e.target.innerText
+      setPage(pageNumber)
 
   }
 
@@ -82,7 +81,8 @@ function handleClick(number){
       <div className="bg">
           <Header/>
           <SearchField handleChange={handleChange}/>
-          <Table data={characters} handleClick={handleClick}/>
+          <Table data={characters} />
+          <Pagination handleClick={handleClick}/>
       </div>
   )
 }
