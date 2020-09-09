@@ -5,13 +5,16 @@ import SearchField from "./Components/SearchField";
 import axios from "axios";
 import Header from "./Components/Header";
 import Pagination from "./Components/Pagination";
+import Loading from "./Components/Loading"
 
 function App() {
   const [characters, setCharacters] = useState([]);
   let [page, setPage] = useState(1);
   let [searchName, setSearchName] = useState("");
+  let [fetching, setFectching] = useState(null)
 
   useEffect(() => {
+    setFectching(true)
     fetchCharactersPage()
       .then((res) => fetchCharacterHomeworld(res))
       .then((res) => fetchSpecies(res))
@@ -30,8 +33,9 @@ function App() {
   }, [searchName]);
 
   async function fetchCharactersPage() {
-    const response = await axios.get(`https://swapi.dev/api/people?page=${page}`)
-    return response.data.results;
+    const response = await axios.get(`https://swapi.dev/api/people/?page=${page}`)
+    const charactersObject = response.data.results
+    return charactersObject
   }
 
   async function fetchCharacterHomeworld(charactersPage) {
@@ -60,9 +64,10 @@ function App() {
 
   async function fetchCharactersByName() {
     let response = await axios(
-      `https://swapi.dev/api/people?search=${searchName}`
+      `https://swapi.dev/api/people/?search=${searchName}`
     );
-    return response.data.results;
+    const charactersObject = response.data.results
+    return charactersObject
   }
 
   function handleChange(event) {
@@ -86,6 +91,7 @@ function App() {
     <div className="bg">
       <Header />
       <SearchField handleChange={handleChange} />
+      <Loading />
       <Table data={characters} />
       <Pagination handleClick={handleClick} />
     </div>
