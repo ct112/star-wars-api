@@ -36,7 +36,7 @@ function App() {
 
   async function fetchCharacterHomeworld(charactersPage) {
     for (let individualCharacter of charactersPage) {
-      let characterHomeworld = await axios(individualCharacter.homeworld);
+      let characterHomeworld = await axios(formatURL(individualCharacter.homeworld));
       individualCharacter.homeworld = characterHomeworld.data.name;
     }
     return charactersPage;
@@ -45,13 +45,17 @@ function App() {
   async function fetchSpecies(charactersPage) {
     for (let individualCharacter of charactersPage) {
       if (individualCharacter.species.length !== 0) {
-        let characterSpecies = await axios(individualCharacter.species[0]);
+        let characterSpecies = await axios(formatURL(individualCharacter.species[0]));
         individualCharacter.species = characterSpecies.data.name;
       } else {
         individualCharacter.species.push("human");
       }
     }
     return charactersPage;
+  }
+  function formatURL(url){
+    let formattedURL = ["https",url.substr(4)]
+    return formattedURL.join("")
   }
 
   async function fetchCharactersByName() {
