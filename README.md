@@ -11,5 +11,5 @@ StarWars API app with live search written using React, Javascript, and Bootstrap
 Deployed to Heroku [here](https://star-wars-api-113.herokuapp.com/#)
 
 ## Author
-**Chris Tsui** **Full Stack Developer**
+**Chris Tsui** - *Full Stack Developer* -
 
