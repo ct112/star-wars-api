@@ -1,11 +1,16 @@
-import React from "react"
+import React from "react";
 
 function Loading(props) {
-    return (
-        <div>
-
-        </div>
-    )
+  const toggleDisplayAttribute = props.isLoading === true ? "block" : "none";
+  return (
+    <div
+      className="spinner-border"
+      role="status"
+      style={{ display: toggleDisplayAttribute }}
+    >
+      <span className="sr-only"></span>
+    </div>
+  );
 }
 
-export default Loading
+export default Loading;

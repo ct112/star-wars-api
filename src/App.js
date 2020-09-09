@@ -1,40 +1,45 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState} from "react";
 import "./App.css";
 import Table from "./Components/Table";
 import SearchField from "./Components/SearchField";
-import axios from "axios";
 import Header from "./Components/Header";
 import Pagination from "./Components/Pagination";
-import Loading from "./Components/Loading"
+import Loading from "./Components/Loading";
+import axios from "axios";
 
 function App() {
   const [characters, setCharacters] = useState([]);
   let [page, setPage] = useState(1);
   let [searchName, setSearchName] = useState("");
-  let [isFetching, setIsFectching] = useState(null)
+  let [isFetching, setIsFetching] = useState(null);
 
   useEffect(() => {
-    setIsFectching(true)
+    setIsFetching(true);
     fetchCharactersPage()
       .then((res) => fetchCharacterHomeworld(res))
       .then((res) => fetchSpecies(res))
       .then((res) => setCharacters(res))
+      .finally(() => setIsFetching(false))
       .catch((error) => console.log(error));
   }, [page]);
 
   useEffect(() => {
-    if (searchName==="") {
+    if (searchName === "") {
+      setIsFetching(true);
       fetchCharactersPage()
         .then((res) => fetchCharacterHomeworld(res))
         .then((res) => fetchSpecies(res))
         .then((res) => setCharacters(res))
+        .finally(() => setIsFetching(false))
         .catch((error) => console.log(error));
     }
   }, [searchName]);
 
   async function fetchCharactersPage() {
-    const response = await axios.get(`https://swapi.dev/api/people/?page=${page}`)
-    const charactersPage = response.data.results
+    const response = await axios.get(
+      `https://swapi.dev/api/people/?page=${page}`
+    );
+    const charactersPage = response.data.results;
     return charactersPage;
   }
 
@@ -57,21 +62,21 @@ function App() {
     }
     return charactersPage;
   }
-  function formatURL(url){
-    let formattedURL = ["https",url.substr(4)].join("")
-    return formattedURL
+  function formatURL(url) {
+    const formattedURL = ["https", url.substr(4)].join("");
+    return formattedURL;
   }
 
   async function fetchCharactersByName() {
     let response = await axios(
       `https://swapi.dev/api/people/?search=${searchName}`
     );
-    const charactersPage = response.data.results
-    return charactersPage
+    const charactersPage = response.data.results;
+    return charactersPage;
   }
 
   function handleChange(event) {
-    let { value } = event.target;
+    const { value } = event.target;
     setSearchName(value);
     if (searchName.length >= 3) {
       fetchCharactersByName()
@@ -91,7 +96,7 @@ function App() {
     <div className="bg">
       <Header />
       <SearchField handleChange={handleChange} />
-      <Loading />
+      <Loading isLoading={isFetching} />
       <Table data={characters} />
       <Pagination handleClick={handleClick} />
     </div>
