@@ -30,13 +30,13 @@ function App() {
   }, [searchName]);
 
   async function fetchCharactersPage() {
-    const response = await axios(`https://swapi.dev/api/people?page=${page}`);
+    const response = await axios.get(`https://swapi.dev/api/people?page=${page}`)
     return response.data.results;
   }
 
   async function fetchCharacterHomeworld(charactersPage) {
     for (let individualCharacter of charactersPage) {
-      let characterHomeworld = await axios(formatURL(individualCharacter.homeworld));
+      let characterHomeworld = await axios.get(formatURL(individualCharacter.homeworld));
       individualCharacter.homeworld = characterHomeworld.data.name;
     }
     return charactersPage;
@@ -45,7 +45,7 @@ function App() {
   async function fetchSpecies(charactersPage) {
     for (let individualCharacter of charactersPage) {
       if (individualCharacter.species.length !== 0) {
-        let characterSpecies = await axios(formatURL(individualCharacter.species[0]));
+        let characterSpecies = await axios.get(formatURL(individualCharacter.species[0]));
         individualCharacter.species = characterSpecies.data.name;
       } else {
         individualCharacter.species.push("human");
@@ -54,8 +54,8 @@ function App() {
     return charactersPage;
   }
   function formatURL(url){
-    let formattedURL = ["https",url.substr(4)]
-    return formattedURL.join("")
+    let formattedURL = ["https",url.substr(4)].join("")
+    return formattedURL
   }
 
   async function fetchCharactersByName() {
