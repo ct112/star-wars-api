@@ -11,10 +11,10 @@ function App() {
   const [characters, setCharacters] = useState([]);
   let [page, setPage] = useState(1);
   let [searchName, setSearchName] = useState("");
-  let [fetching, setFectching] = useState(null)
+  let [isFetching, setIsFectching] = useState(null)
 
   useEffect(() => {
-    setFectching(true)
+    setIsFectching(true)
     fetchCharactersPage()
       .then((res) => fetchCharacterHomeworld(res))
       .then((res) => fetchSpecies(res))
@@ -23,7 +23,7 @@ function App() {
   }, [page]);
 
   useEffect(() => {
-    if (!searchName) {
+    if (searchName==="") {
       fetchCharactersPage()
         .then((res) => fetchCharacterHomeworld(res))
         .then((res) => fetchSpecies(res))
@@ -34,25 +34,25 @@ function App() {
 
   async function fetchCharactersPage() {
     const response = await axios.get(`https://swapi.dev/api/people/?page=${page}`)
-    const charactersObject = response.data.results
-    return charactersObject
+    const charactersPage = response.data.results
+    return charactersPage;
   }
 
   async function fetchCharacterHomeworld(charactersPage) {
-    for (let individualCharacter of charactersPage) {
-      let characterHomeworld = await axios.get(formatURL(individualCharacter.homeworld));
-      individualCharacter.homeworld = characterHomeworld.data.name;
+    for (let character of charactersPage) {
+      let characterHomeworld = await axios.get(formatURL(character.homeworld));
+      character.homeworld = characterHomeworld.data.name;
     }
     return charactersPage;
   }
 
   async function fetchSpecies(charactersPage) {
-    for (let individualCharacter of charactersPage) {
-      if (individualCharacter.species.length !== 0) {
-        let characterSpecies = await axios.get(formatURL(individualCharacter.species[0]));
-        individualCharacter.species = characterSpecies.data.name;
+    for (let character of charactersPage) {
+      if (character.species.length !== 0) {
+        let characterSpecies = await axios.get(formatURL(character.species[0]));
+        character.species = characterSpecies.data.name;
       } else {
-        individualCharacter.species.push("human");
+        character.species.push("human");
       }
     }
     return charactersPage;
@@ -66,8 +66,8 @@ function App() {
     let response = await axios(
       `https://swapi.dev/api/people/?search=${searchName}`
     );
-    const charactersObject = response.data.results
-    return charactersObject
+    const charactersPage = response.data.results
+    return charactersPage
   }
 
   function handleChange(event) {
